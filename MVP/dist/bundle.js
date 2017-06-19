@@ -41,15 +41,8 @@
         return Object.prototype.hasOwnProperty.call(object, property);
     };
     __webpack_require__.p = "";
-    return __webpack_require__(__webpack_require__.s = 2);
+    return __webpack_require__(__webpack_require__.s = 1);
 })([ function(module, exports, __webpack_require__) {
-    "use strict";
-    var anotherFile = {};
-    anotherFile.square = function(a) {
-        return a * a;
-    };
-    module.exports = anotherFile;
-}, function(module, exports, __webpack_require__) {
     "use strict";
     var operations = {};
     operations.add = function(a, b) {
@@ -58,17 +51,16 @@
     operations.multiply = function(a, b) {
         return a * b;
     };
-    tape("Add - adds numbers", function(t) {
-        var two = 2;
-        var zero = 0;
-        t.equal(numbers.add(1, 2), two);
-        t.equal(numbers.add(3, 4), 7);
-        t.notEqual(numbers.add(3, 4), zero);
-        t.end();
-    });
+    var mvpDemo = {};
+    mvpDemo.isNegativeOrOdd = function(value) {
+        return value < 0 || value % 2 !== 0;
+    };
+    mvpDemo.reverseString = function(string) {
+        return string.split("").reverse().join("");
+    };
+    module.exports = mvpDemo;
     module.exports = operations;
 }, function(module, exports, __webpack_require__) {
     "use strict";
-    var operations = __webpack_require__(1);
-    var anotherFile = __webpack_require__(0);
+    var operations = __webpack_require__(0);
 } ]);

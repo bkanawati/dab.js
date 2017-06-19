@@ -1,7 +1,7 @@
 const path = require('path');
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
-const webpackDabUncommentPlugin = require('./webpack-dab-uncomment-plugin');
+const webpackCommentExtractionPlugin = require('./webpack-comment-extraction-plugin.js');
 
 module.exports = {
   entry: './src/app.js',
@@ -9,26 +9,23 @@ module.exports = {
     filename: 'bundle.js',
     path: path.resolve(__dirname, 'dist')
   },
-  resolveLoader:{
-    modules: ['node_modules', path.resolve(__dirname)]
-  },
   module: {
     rules: [
         {test: /\.(js)$/, use: 'babel-loader'}
     ]
   },
   plugins: [
-    new webpackDabUncommentPlugin(),
 			new webpack.optimize.UglifyJsPlugin({
                 compress: false,
                 mangle: false,
                 comments: false,
                 beautify: true,
                 extractComments: {
-                  condition: /~/,
-                  filename: '../tests/mvp-test-sample.js'
+                  condition: /dab/,
+                  filename: '../tests/tape-test-sample.js'
                 },
-            })
+            }),
+      new webpackCommentExtractionPlugin()
 	]
 
 };
