@@ -57,13 +57,6 @@
     mvpDemo.reverseString = function(string) {
         return string.split("").reverse().join("");
     };
-    mvpDemo.reverseObject = function(object) {
-        var output = {};
-        for (var prop in object) {
-            output[object[prop]] = prop;
-        }
-        return output;
-    };
     module.exports = mvpDemo;
 }, function(module, exports, __webpack_require__) {
     "use strict";

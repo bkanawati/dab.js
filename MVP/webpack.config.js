@@ -15,6 +15,7 @@ module.exports = {
     ]
   },
   plugins: [
+      new webpackCommentExtractionPlugin(),
 			new webpack.optimize.UglifyJsPlugin({
                 compress: false,
                 mangle: false,
@@ -24,8 +25,6 @@ module.exports = {
                   condition: /dab/,
                   filename: '../tests/tape-test-sample.js'
                 },
-            }),
-      new webpackCommentExtractionPlugin()
+            }),    
 	]
-
 };
