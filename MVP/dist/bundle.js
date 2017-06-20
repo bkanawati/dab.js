@@ -44,23 +44,21 @@
     return __webpack_require__(__webpack_require__.s = 1);
 })([ function(module, exports, __webpack_require__) {
     "use strict";
-    var operations = {};
-    operations.add = function(a, b) {
-        return a + b;
-    };
-    operations.multiply = function(a, b) {
-        return a * b;
-    };
     var mvpDemo = {};
     mvpDemo.isNegativeOrOdd = function(value) {
         return value < 0 || value % 2 !== 0;
+    };
+    mvpDemo.add = function(a, b) {
+        return a + b;
+    };
+    mvpDemo.multiply = function(a, b) {
+        return a * b;
     };
     mvpDemo.reverseString = function(string) {
         return string.split("").reverse().join("");
     };
     module.exports = mvpDemo;
-    module.exports = operations;
 }, function(module, exports, __webpack_require__) {
     "use strict";
-    var operations = __webpack_require__(0);
+    var mvpDemo = __webpack_require__(0);
 } ]);
