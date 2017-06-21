@@ -1,5 +1,5 @@
 const test = require('tape'); 
-const mvpDemo = require('/Users/john-ivan/Documents/Codesmith/Production-Project-dAB.js/dab.js/MVP/src/mvpDemo.js');
+const mvpDemo = require('C:/Users/Batul/Desktop/dab.js/MVP/src/mvpDemo.js');
 
 test('Negative or Odd', function (t) {
 t.equal(mvpDemo.isNegativeOrOdd(1),  true , 'error');

@@ -3,6 +3,7 @@ module.exports = function({types: t}) {
   return {
     visitor: {
       Program(path, state) {
+        // console.log("filename" ,state.file.opts);
         // if there are comments in the program file
         if (path.parent.comments.length) {
           const comments = path.parent.comments
@@ -73,10 +74,10 @@ module.exports = function({types: t}) {
 
                 // If assertion contains an error message
                 if (argumentSplit.length > 1) {
-                  // console.log("1st", argumentSplit);
+                  console.log("1st", argumentSplit);
                   let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
                   let secondAssSplit = argumentSplit[0].slice(startIndExpression);
-                  actual = firstAssSplit.replace(/\s*$/, '');
+                  actual = state.file.opts.sourceMapTarget.slice(0, state.file.opts.sourceMapTarget.length - 3) + "." + firstAssSplit.replace(/\s*$/, '');
                   expression = argumentSplit[0].slice(startIndExpression, startIndExpression + expressionEndPoint);
                   // console.log('exp', expression)
                   expected = argumentSplit[0].slice(startIndExpression + expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
@@ -85,10 +86,10 @@ module.exports = function({types: t}) {
                 }
                 // If assertion does not contain an error message
                 if (argumentSplit.length < 2) {
-                  //  console.log("2nd", argumentSplit[0]);
+                   console.log("2nd", argumentSplit[0]);
                   let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
                   let secondAssSplit = argumentSplit[0].slice(startIndExpression);
-                  actual = firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
+                  actual = state.file.opts.sourceMapTarget.slice(0, state.file.opts.sourceMapTarget.length - 3) + "." + firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
                   expression = argumentSplit[0].slice(startIndExpression, startIndExpression + expressionEndPoint);
                   // TODO SHOULD WE HAVE A DEFAULT ERROR MESSAGE
                   expected = argumentSplit[0].slice(startIndExpression + expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
@@ -97,7 +98,7 @@ module.exports = function({types: t}) {
                     "'";
                 }
                 resultOfAssertion += "\t" + "t." + expression + "(" + actual + ", " + expected + ", " + errMessage + ");" + "\n";
-                // console.log(resultOfAssertion);
+                console.log(resultOfAssertion);
                 return resultOfAssertion;
               }
 
