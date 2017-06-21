@@ -44,6 +44,11 @@
     return __webpack_require__(__webpack_require__.s = 1);
 })([ function(module, exports, __webpack_require__) {
     "use strict";
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
+        return typeof obj;
+    } : function(obj) {
+        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
     var mvpDemo = {};
     mvpDemo.isNegativeOrOdd = function(value) {
         return value < 0 || value % 2 !== 0;
@@ -56,6 +61,31 @@
     };
     mvpDemo.reverseString = function(string) {
         return string.split("").reverse().join("");
+    };
+    mvpDemo.cloneDeep = function(value) {
+        var keys = Object.keys(value);
+        var cloned = {};
+        keys.forEach(function(e) {
+            if (_typeof(value[e]) === "object") {
+                cloned[e] = cloneDeep(value[e]);
+            } else {
+                cloned[e] = value[e];
+            }
+        });
+        return cloned;
+    };
+    mvpDemo.clone = function(value) {
+        if (isArray(value)) {
+            return value.map(function(ele, i) {
+                return ele;
+            });
+        } else {
+            var obj = {};
+            for (var key in value) {
+                obj[key] = value[key];
+            }
+            return obj;
+        }
     };
     module.exports = mvpDemo;
 }, function(module, exports, __webpack_require__) {

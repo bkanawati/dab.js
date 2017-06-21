@@ -24,7 +24,8 @@ mvpDemo.multiply = (a, b) => {
 }
 
 /* ~ Multiple numbers
-  ~   multiply(1,2) equal 2
+  ~v n = 2; m = 1
+  ~   multiply(n,m) equal 2
 */
 
 
@@ -48,20 +49,55 @@ mvpDemo.reverseString =  function (string) {
 //    });
 //     return cloned;
 // }
+mvpDemo.cloneDeep = function(value) {
 
-// function clone(value) {
-//     if (isArray(value)){
-//         return value.map(function(ele, i) {
-//             return ele;
-//         });
-//     }
-//     else {
-//         var obj = {};
-//         for (var key in value){
-//             obj[key] = value[key];
-//         }
-//         return obj;
-//     }
-// }
+   const keys = Object.keys(value);
+    const cloned = {};
+    keys.forEach(e => {
+      if(typeof value[e]==='object'){
+      cloned[e] = cloneDeep(value[e]);
+    }else {
+      cloned[e] = value[e];
+    }
+    });
+    return cloned;
+  }
+
+/*
+ ~should return deep copy of object
+  ~v const users = [
+      { 'user': 'barney' },
+      { 'user': 'fred' },
+      { 'user': 'andy', friends: { 'user': 'alex' } }
+    ];
+    deepClone = mvpDemo.cloneDeep(users);
+    ~deepClone equal users | equal users
+    ~deepClone equal users
+    ~deepClone[0] deepEqual users[0]
+    ~deepClone[0] deepEqual users[0]
+    ~deepClone[0].user deepEqual users[0].user
+    ~deepClone[2].friends deepEqual users[2].friends
+    ~deepClone[2].friends deepEqual users[2].friends | friends equal
+  });
+*/
+
+mvpDemo.clone = function(value) {
+    if (isArray(value)){
+        return value.map(function(ele, i) {
+            return ele;
+        });
+    }
+    else {
+        var obj = {};
+        for (var key in value){
+            obj[key] = value[key];
+        }
+        return obj;
+    }
+}
+
+/*
+
+*/
 
   module.exports = mvpDemo;
