@@ -37,7 +37,7 @@ module.exports = function({types: t}) {
               // console.log('CURRENT COMMENTS', currcomments);
               // currcomments[0] is empty
               // currcomments[1] = name/description and is required
-              let description = "'" + currcomments[1].replace(/\r\n/, "\n").split(/\n/)[0] + "'";
+              let description = "'" + currcomments[1].replace(/\r\n/, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '') + "'";
               console.log(description);
               let actual;
               let expression;
@@ -77,8 +77,8 @@ module.exports = function({types: t}) {
                   console.log("1st", argumentSplit);
                   let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
                   let secondAssSplit = argumentSplit[0].slice(startIndExpression);
-                  actual = state.file.opts.sourceMapTarget.slice(0, state.file.opts.sourceMapTarget.length - 3) + "." + firstAssSplit.replace(/\s*$/, '');
-                  expression = argumentSplit[0].slice(startIndExpression, startIndExpression + expressionEndPoint);
+                  actual = state.file.opts.sourceMapTarget.slice(0, state.file.opts.sourceMapTarget.length - 3) + "." + firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
+                  expression = argumentSplit[0].slice(startIndExpression, startIndExpression + expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');;
                   // console.log('exp', expression)
                   expected = argumentSplit[0].slice(startIndExpression + expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
                   let message = argumentSplit[1].replace(/\s*[\r\n]+\s*/g, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '');
@@ -90,7 +90,7 @@ module.exports = function({types: t}) {
                   let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
                   let secondAssSplit = argumentSplit[0].slice(startIndExpression);
                   actual = state.file.opts.sourceMapTarget.slice(0, state.file.opts.sourceMapTarget.length - 3) + "." + firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
-                  expression = argumentSplit[0].slice(startIndExpression, startIndExpression + expressionEndPoint);
+                  expression = argumentSplit[0].slice(startIndExpression, startIndExpression + expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');;
                   // TODO SHOULD WE HAVE A DEFAULT ERROR MESSAGE
                   expected = argumentSplit[0].slice(startIndExpression + expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
                   errMessage = "'" +

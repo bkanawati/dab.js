@@ -6,7 +6,7 @@
    return value < 0 || value % 2 !== 0;
  }
  /* ~Negative or Odd
-   ~isNegativeOrOdd(1) equal true | error
+   ~sNegativeOrOdd(1) equal true | error
    ~isNegativeOrOdd(10) equal false
    ~isNegativeOrOdd(10) notEqual true
 */
@@ -15,16 +15,16 @@
   return a + b;
 };
 /*
-  ~Add two numbers correctly
-   ~add(1,2) equal 3
+  ~ Add two numbers correctly
+   ~ add(1,2) equal 3
 */
 
 mvpDemo.multiply = (a, b) => {
   return a * b;
 }
 
-/* ~Multiple numbers
-  ~multiply(1,2) equal 2
+/* ~ Multiple numbers
+  ~   multiply(1,2) equal 2
 */
 
 

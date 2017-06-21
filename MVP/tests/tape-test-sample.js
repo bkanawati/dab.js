@@ -2,7 +2,7 @@ const test = require('tape');
 const mvpDemo = require('C:/Users/Batul/Desktop/dab.js/MVP/src/mvpDemo.js');
 
 test('Negative or Odd', function (t) {
-t.equal(mvpDemo.isNegativeOrOdd(1),  true , 'error');
+t.equal(mvpDemo.sNegativeOrOdd(1),  true , 'error');
 t.equal(mvpDemo.isNegativeOrOdd(10),  false, 'error');
 t.notEqual(mvpDemo.isNegativeOrOdd(10),  true, 'error');
 t.end();
