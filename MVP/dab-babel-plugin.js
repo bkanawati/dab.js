@@ -34,20 +34,19 @@ module.exports = function({types: t}) {
             // Split on squigglys/tildas
             if (comments[i].value.includes('~')) {
               let currcomments = comments[i].value.split("~");
-              // console.log('CURRENT COMMENTS', currcomments);
               // currcomments[0] is empty
               // currcomments[1] = name/description and is required
               let description = currcomments[1].replace(/\r\n/, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '');
-              console.log(description);
               let actual;
               let expression;
               let expected;
               let errMessage;
               let resultOfAssertion = "";
               let assertion;
-              let changecomments;
               let startIndExpression;
               let expressionEndPoint;
+              let variables;
+              let finalCommentsTranspiled = "";
 
               // Helper function that splits the ASSERTION: actual, expected, and expression
               function assertions(string) {
@@ -74,75 +73,45 @@ module.exports = function({types: t}) {
                   // console.log("1st", argumentSplit);
                   let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
                   let secondAssSplit = argumentSplit[0].slice(startIndExpression);
-                  actual = state.file.opts.sourceMapTarget.slice(0, state.file.opts.sourceMapTarget.length - 3) + "." + firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
+                  actual =  firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
                   expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
                   expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
                   let message = argumentSplit[1].replace(/\s*[\r\n]+\s*/g, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '');
                   errMessage = "'" + message + "'";
                 }
+
                 // If assertion does not contain an error message
                 if (argumentSplit.length < 2) {
                   //  console.log("2nd", argumentSplit[0]);
                   let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
                   let secondAssSplit = argumentSplit[0].slice(startIndExpression);
-                  actual = state.file.opts.sourceMapTarget.slice(0, state.file.opts.sourceMapTarget.length - 3) + "." + firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
+                  actual =  firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
                   expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
                   // TODO SHOULD WE HAVE A DEFAULT ERROR MESSAGE
                   expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
                   errMessage = "'" + "Error: " + description + "'"
                 }
-                resultOfAssertion += "\t" + "t." + expression + "(" + actual + ", " + expected + ", " + errMessage + ");" + "\n";
+                resultOfAssertion = "\t" + "t." + expression + "(" + actual + ", " + expected + ", " + errMessage + ");" + "\n";
                 // console.log(resultOfAssertion);
                 return resultOfAssertion;
               }
 
-              // if comments[2] does not exist (NO VARIABLES) then comments[2] would have been assertion
-              if (currcomments[2][0] !== 'v') {
-                if (currcomments.length >= 3) {
-                  for (let i = 2; i < currcomments.length; i++) {
-                    // TODO WHAT DOES THE REGEX SPACES DO?
-                    if (currcomments[i] !== undefined && /\S/.test(currcomments[i])) {
-                      assertion = assertions(currcomments[i]);
-                    }
-                  }
-                }
-                changecomments = " dabtest('" + description + "', function (t) {" + "\n" + assertion + "\t" + "t.end();" + "\n" + "});";
-              }
 
-              // if currcomments[2] is a variable (optional)
-              let variables;
-              if (currcomments[2].indexOf("v") !== -1 && currcomments[2][0] === 'v') {
-                // TODO ENSURE THAT SPLITTING ON SEMI COLON DOESNT BREAK STUFF E.G. SEMICOLON IN STRINGS
-                let varStorage = currcomments[2].slice(1).replace(/\s*[\r\n]+\s*/g, " ").split(";");
-                let allVar = "";
-                
-                for (let eachVar = 0; eachVar < varStorage.length; eachVar++) {
-                  console.log("Variable storage" , varStorage);
-                  
-                  if (/\S/.test(varStorage[eachVar]) && varStorage[eachVar] !== undefined) {
-                       if (varStorage[eachVar].indexOf("const") > -1 || varStorage[eachVar].indexOf("var") > -1 || varStorage[eachVar].indexOf("let") > -1) {
-                          allVar += "\t" + varStorage[eachVar].replace(/\s*[\r\n]+\s*/g, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '') + ";" + "\n";
-                       } else {
-                          allVar += "\t" + "let " + varStorage[eachVar].replace(/\s*[\r\n]+\s*/g, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '') + ";" + "\n";
-                       }
-                      console.log(allVar);
-                  } else {
-                    continue;
+              for (let index = 2; index < currcomments.length; index++) {
+                  // if comments[index] is an assertion
+                  if (currcomments[index][0] !== 'v' && currcomments[index][1] !== ':' && currcomments[index] !== undefined && /\S/.test(currcomments[index])) {
+                      assertion = assertions(currcomments[index]);
+                      finalCommentsTranspiled += assertion;
                   }
-                }
-                variables = allVar;
-                // once variables are done currcomments[3] and so on will be assertion
-                if (currcomments.length > 3) {
-                  for (let i = 3; i < currcomments.length; i++) {
-                    if (currcomments[i] !== undefined && /\S/.test(currcomments[i])) {
-                      assertion = assertions(currcomments[i]);
-                    }
+
+                  // if currcomments[index] is a variable (optional)
+                  if (currcomments[index].indexOf("v:") !== -1 && currcomments[index][0] === 'v' && currcomments[index][1] === ':') {
+                    variables = "\t" + currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, '');
+                    finalCommentsTranspiled += variables;
                   }
-                }
-                // TRANSPILED TEST SYNTAX
-                changecomments = " dabtest('" + description + "', function (t) {" + "\n" + variables + "\n" + assertion + "\t" + "t.end();" + "\n" + "});";
+                  console.log("here we go again", finalCommentsTranspiled);
               }
-              comments[i].value = changecomments;
+              comments[i].value = " dabtest('" + description + "', function (t) {" + "\n" + finalCommentsTranspiled + "\t" + "t.end();" + "\n" + "});" ;
             }
           }
         }

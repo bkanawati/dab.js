@@ -67,7 +67,7 @@
         var cloned = {};
         keys.forEach(function(e) {
             if (_typeof(value[e]) === "object") {
-                cloned[e] = cloneDeep(value[e]);
+                cloned[e] = mvpDemo.cloneDeep(value[e]);
             } else {
                 cloned[e] = value[e];
             }
@@ -75,7 +75,7 @@
         return cloned;
     };
     mvpDemo.clone = function(value) {
-        if (isArray(value)) {
+        if (Array.isArray(value)) {
             return value.map(function(ele, i) {
                 return ele;
             });
@@ -86,6 +86,21 @@
             }
             return obj;
         }
+    };
+    mvpDemo.memoize = function(func) {
+        var cache = {};
+        return function() {
+            for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
+                params[_key] = arguments[_key];
+            }
+            var args = params.map(function(e) {
+                return JSON.stringify(e);
+            });
+            if (cache[args]) return cache[args]; else {
+                cache[args] = func.apply(undefined, params);
+                return cache[args];
+            }
+        };
     };
     module.exports = mvpDemo;
 }, function(module, exports, __webpack_require__) {
