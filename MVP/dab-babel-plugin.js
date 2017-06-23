@@ -36,7 +36,19 @@ module.exports = function({types: t}) {
               let currcomments = comments[i].value.split("~");
               // currcomments[0] is empty
               // currcomments[1] = name/description and is required
+              let test = ' dabtest';
               let description = currcomments[1].replace(/\r\n/, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '');
+               //CHANGES JP
+              if (description[0] === 'x' && description[1] === ':') {
+                    description = description.slice(2).replace(/^[ ]+|[ ]+$/g, '');
+                    test = ' dabtest.skip';
+              }; 
+              
+              if (description[0] === 'o' && description[1] === ':') {
+                    description = description.slice(2).replace(/^[ ]+|[ ]+$/g, '');
+                    test = ' dabtest.only';
+              };
+
               let actual;
               let expression;
               let expected;
@@ -45,8 +57,10 @@ module.exports = function({types: t}) {
               let assertion;
               let startIndExpression;
               let expressionEndPoint;
+              let argumentLength = 0;
               let variables;
               let finalCommentsTranspiled = "";
+              let endTest = "\t" + "t.end();" + "\n";
 
               // Helper function that splits the ASSERTION: actual, expected, and expression
               function assertions(string) {
@@ -57,61 +71,103 @@ module.exports = function({types: t}) {
                   "deepEqual",
                   "notDeepEqual",
                   "deepLooseEqual",
-                  "notDeepLooseEqual"
+                  "notDeepLooseEqual",
+                  "throws",
+                  "doesNotThrow",
+                  "same",
+                  "notSame",
+                  "strictSame",
+                  "strictNotSame"
                 ];
 
+                let twoArgExpression = ["ok", "notOk", "error"];
+
                 // Find the expression start index and end index
-                for (let j = 0; j < threeArgExpression.length; j++) {
-                  if (argumentSplit[0].indexOf(threeArgExpression[j]) !== -1) {
-                    startIndExpression = argumentSplit[0].indexOf(threeArgExpression[j]);
-                    expressionEndPoint = startIndExpression + threeArgExpression[j].length;
+                for (let three = 0; three < threeArgExpression.length; three++) {
+                  if (argumentSplit[0].indexOf(threeArgExpression[three]) !== -1) {
+                     startIndExpression = argumentSplit[0].indexOf(threeArgExpression[three]);
+                     expressionEndPoint = startIndExpression + threeArgExpression[three].length;
+                     argumentLength = 3;
                   }
                 }
 
-                // If assertion contains an error message
-                if (argumentSplit.length > 1) {
-                  // console.log("1st", argumentSplit);
-                  let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
-                  let secondAssSplit = argumentSplit[0].slice(startIndExpression);
-                  actual =  firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
-                  expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
-                  expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
-                  let message = argumentSplit[1].replace(/\s*[\r\n]+\s*/g, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '');
-                  errMessage = "'" + message + "'";
+                for (let two = 0; two < twoArgExpression.length; two++) {
+                  if (argumentSplit[0].indexOf(twoArgExpression[two]) !== -1) {
+                     startIndExpression = argumentSplit[0].indexOf(twoArgExpression[two]);
+                     expressionEndPoint = startIndExpression + twoArgExpression[two].length;
+                     argumentLength = 2;
+                   }
                 }
 
-                // If assertion does not contain an error message
-                if (argumentSplit.length < 2) {
-                  //  console.log("2nd", argumentSplit[0]);
-                  let firstAssSplit = argumentSplit[0].slice(0, startIndExpression);
-                  let secondAssSplit = argumentSplit[0].slice(startIndExpression);
-                  actual =  firstAssSplit.replace(/^[ ]+|[ ]+$/g, '');
-                  expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
-                  // TODO SHOULD WE HAVE A DEFAULT ERROR MESSAGE
-                  expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
-                  errMessage = "'" + "Error: " + description + "'"
+                // If assertion contains an error message
+                if (argumentLength === 3) {
+                    if (argumentSplit.length > 1) {
+                      // console.log("1st", argumentSplit);
+                      actual =  argumentSplit[0].slice(0, startIndExpression).replace(/^[ ]+|[ ]+$/g, '');
+                      expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
+                      expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
+                      let message = argumentSplit[1].replace(/\s*[\r\n]+\s*/g, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '');
+                      errMessage = "'" + message + "'";
+                    }
+
+                    // If assertion does not contain an error message
+                    if (argumentSplit.length < 2) {
+                      //  console.log("2nd", argumentSplit[0]);
+                      actual =  argumentSplit[0].slice(0, startIndExpression).replace(/^[ ]+|[ ]+$/g, '');
+                      expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
+                      expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
+                      errMessage = "'" + "Error: " + description + "'";
+                    }
+                    resultOfAssertion = "\t" + "t." + expression + "(" + actual + ", " + expected + ", " + errMessage + ");" + "\n";
+                    return resultOfAssertion;
                 }
-                resultOfAssertion = "\t" + "t." + expression + "(" + actual + ", " + expected + ", " + errMessage + ");" + "\n";
-                // console.log(resultOfAssertion);
-                return resultOfAssertion;
+
+                if (argumentLength === 2) {
+                  console.log("length is 2")
+                    if (argumentSplit.length > 1) {
+                      // console.log("1st", argumentSplit);
+                      expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
+                      expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
+                      let message = argumentSplit[1].replace(/\s*[\r\n]+\s*/g, "\n").split(/\n/)[0].replace(/^[ ]+|[ ]+$/g, '');
+                      errMessage = "'" + message + "'";
+                    }
+
+                    // If assertion does not contain an error message
+                    if (argumentSplit.length < 2) {
+                      //  console.log("2nd", argumentSplit[0]);
+                      expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
+                      expected = argumentSplit[0].slice(expressionEndPoint).replace(/\r\n/, "\n").split(/\n/)[0];
+                      errMessage = "'" + "Error: " + description + "'";
+                    }
+                    resultOfAssertion = "\t" + "t." + expression + "(" + expected + ", " + errMessage + ");" + "\n";
+                    return resultOfAssertion;
+                }
               }
 
 
               for (let index = 2; index < currcomments.length; index++) {
                   // if comments[index] is an assertion
-                  if (currcomments[index][0] !== 'v' && currcomments[index][1] !== ':' && currcomments[index] !== undefined && /\S/.test(currcomments[index])) {
-                      assertion = assertions(currcomments[index]);
+                  if (currcomments[index].indexOf("a:") !== -1 && currcomments[index][0] === 'a' && currcomments[index][1] === ':') {
+                    console.log("this is assertion", currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, ''));
+                      assertion = assertions(currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, ''));
                       finalCommentsTranspiled += assertion;
                   }
 
                   // if currcomments[index] is a variable (optional)
-                  if (currcomments[index].indexOf("v:") !== -1 && currcomments[index][0] === 'v' && currcomments[index][1] === ':') {
-                    variables = "\t" + currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, '');
+                  if (currcomments[index][0] !== 'a' && currcomments[index][1] !== ':' && currcomments[index] !== undefined && /\S/.test(currcomments[index])) {
+                    variables = "\t" + currcomments[index].replace(/^[ ]+|[ ]+$/g, '');
                     finalCommentsTranspiled += variables;
                   }
-                  console.log("here we go again", finalCommentsTranspiled);
+
+                  //if curcomments[index] is ending in plan 
+                  if (currcomments[index].indexOf("p:") !== -1 && currcomments[index][0] === 'p' && currcomments[index][1] === ':') {
+                    // let plan  = "\t" + currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, '');
+                    let planInput = currcomments[index].slice(2).replace(/\s/g, ''); 
+                    endTest = '';
+                    finalCommentsTranspiled += `\tt.plan(${planInput});\n`
+                  }
               }
-              comments[i].value = " dabtest('" + description + "', function (t) {" + "\n" + finalCommentsTranspiled + "\t" + "t.end();" + "\n" + "});" ;
+              comments[i].value = test + "('" + description + "', function (t) {" + "\n" + finalCommentsTranspiled +  endTest + "});" ;
             }
           }
         }
