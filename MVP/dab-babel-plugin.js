@@ -129,7 +129,7 @@ module.exports = function({types: t}) {
                 }
 
                 if (argumentLength === 2) {
-                  console.log("length is 2")
+                  // console.log("length is 2")
                     if (argumentSplit.length > 1) {
                       // console.log("1st", argumentSplit);
                       expression = argumentSplit[0].slice(startIndExpression, expressionEndPoint).replace(/^[ ]+|[ ]+$/g, '');
@@ -154,15 +154,22 @@ module.exports = function({types: t}) {
               for (let index = 2; index < currcomments.length; index++) {
                   // if comments[index] is an assertion
                   if (currcomments[index].indexOf("a:") !== -1 && currcomments[index][0] === 'a' && currcomments[index][1] === ':') {
-                    console.log("this is assertion", currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, ''));
+                    // console.log("this is assertion", currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, ''));
                       assertion = assertions(currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, ''));
                       finalCommentsTranspiled += assertion;
                   }
 
                   // if currcomments[index] is a variable (optional)
                   if (currcomments[index][0] !== 'a' && currcomments[index][1] !== ':' && currcomments[index] !== undefined && /\S/.test(currcomments[index])) {
-                    variables = "\t" + currcomments[index].replace(/^[ ]+|[ ]+$/g, '');
-                    finalCommentsTranspiled += variables;
+                    let variableSplit = currcomments[index].replace(/\r\n/, "\n").split(/\n/);
+                    console.log(variableSplit);
+                    for(let v = 0; v < variableSplit.length; v++){
+                      if (variableSplit[v] !== undefined && /\S/.test(variableSplit[v])) {
+                        variables = "\t" + variableSplit[v].replace(/^[ ]+|[ ]+$/g, '') + "\n";
+                        finalCommentsTranspiled += variables;
+                      }
+                      console.log("variable final comment", finalCommentsTranspiled)
+                    }
                   }
 
                   //if curcomments[index] is ending in plan 

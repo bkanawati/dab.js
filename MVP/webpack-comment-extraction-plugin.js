@@ -27,5 +27,3 @@ webpackCommentExtractionPlugin.prototype.apply = function(compiler) {
 };
 
 module.exports = webpackCommentExtractionPlugin;
-
-
