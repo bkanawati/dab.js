@@ -44,50 +44,44 @@
     return __webpack_require__(__webpack_require__.s = 1);
 })([ function(module, exports, __webpack_require__) {
     "use strict";
-    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function(obj) {
-        return typeof obj;
-    } : function(obj) {
-        return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-    var mvpDemo = {};
-    mvpDemo.isNegativeOrOdd = function(value) {
-        return value < 0 || value % 2 !== 0;
-    };
-    mvpDemo.add = function(a, b) {
-        return a + b;
-    };
-    mvpDemo.multiply = function(a, b) {
-        return a * b;
-    };
-    mvpDemo.reverseString = function(string) {
-        return string.split("").reverse().join("");
-    };
-    mvpDemo.cloneDeep = function(value) {
-        var keys = Object.keys(value);
-        var cloned = {};
-        keys.forEach(function(e) {
-            if (_typeof(value[e]) === "object") {
-                cloned[e] = mvpDemo.cloneDeep(value[e]);
-            } else {
-                cloned[e] = value[e];
+    function _toConsumableArray(arr) {
+        if (Array.isArray(arr)) {
+            for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
+                arr2[i] = arr[i];
             }
-        });
-        return cloned;
-    };
-    mvpDemo.clone = function(value) {
-        if (Array.isArray(value)) {
-            return value.map(function(ele, i) {
-                return ele;
-            });
+            return arr2;
         } else {
-            var obj = {};
-            for (var key in value) {
-                obj[key] = value[key];
+            return Array.from(arr);
+        }
+    }
+    var stressTest = {};
+    stressTest.reverseObject = function(object) {
+        var result = {};
+        for (key in object) {
+            result[object[key]] = key;
+        }
+        return result;
+    };
+    stressTest.filter = function(collection, callback) {
+        if (Array.isArray(collection)) {
+            var filtered = [];
+            collection.forEach(function(v, i, a) {
+                if (callback(collection[i], i, collection)) {
+                    filtered.push(collection[i]);
+                }
+            });
+            return filtered;
+        } else {
+            var _filtered = {};
+            for (key in collection) {
+                if (callback(collection[key], key, collection)) {
+                    _filtered[key] = collection[key];
+                }
             }
-            return obj;
+            return _filtered;
         }
     };
-    mvpDemo.memoize = function(func) {
+    stressTest.memoize = function(func) {
         var cache = {};
         return function() {
             for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
@@ -102,8 +96,14 @@
             }
         };
     };
-    module.exports = mvpDemo;
+    stressTest.delay = function(func, wait) {
+        var args = arguments;
+        var argsArray = [].concat(_toConsumableArray(args));
+        var slicedArgs = argsArray.slice(2);
+        setTimeout.apply(undefined, [ func, wait ].concat(_toConsumableArray(slicedArgs)));
+    };
+    module.exports = stressTest;
 }, function(module, exports, __webpack_require__) {
     "use strict";
-    var mvpDemo = __webpack_require__(0);
+    var stressTest = __webpack_require__(0);
 } ]);

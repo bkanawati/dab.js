@@ -1,67 +1,52 @@
 const test = require('tape'); 
-const mvpDemo = require('C:/Users/Batul/Desktop/dab.js/MVP/src/mvpDemo.js');
+const stressTest = require('C:/Users/Batul/Desktop/dab.js/MVP/src/stressTest.js');
 
-test('Add two numbers correctly', function (t) {
-	t.equal(mvpDemo.add(1,2),  3, 'Error: Add two numbers correctly');
+var numbers= [1,3,4];
+
+test('should reverse multiple properties', function (t) {
+	t.deepEqual(stressTest.reverseObject({a:1,b:2}),  {'1':'a','2':'b'}, 'Error: should reverse multiple properties');
 	t.end();
 });
 
-test('Multiple numbers', function (t) {
-	let n = 2; let m = 1
-	t.equal(mvpDemo.multiply(n,m),  2, 'Error: Multiple numbers');
+test.skip('should return all odd numbers in an array', function (t) {
+	t.deepEqual(stressTest.filter([1, 2, 3, 4, 5, 6], num => num % 2 !== 0),  [1, 3, 5], 'Error: should return all odd numbers in an array');
 	t.end();
 });
 
-test('Reverse String', function (t) {
-	t.equal(mvpDemo.reverseString('will'),  'lliw', 'Error: Reverse String');
-	t.notEqual(mvpDemo.reverseString('hello'),  'lliw', 'Error: Reverse String');
+test('should filter all odd values in obj', function (t) {
+	t.deepEqual(stressTest.filter({a:1, b:2, c:3, d:4}, (value, key, collection) => value % 2 !== 0),  {a:1, c:3}, 'Error: should filter all odd values in obj');
 	t.end();
 });
 
-test('should return deep copy of object', function (t) {
-	const users = [
-      { 'user': 'barney' },
-      { 'user': 'fred' },
-      { 'user': 'andy', friends: { 'user': 'alex' } }
-    ];
-	t.equal(mvpDemo.cloneDeep(users),  users , 'equal users');
-	t.equal(mvpDemo.cloneDeep(users),  users, 'Error: should return deep copy of object');
-	t.deepEqual(mvpDemo.cloneDeep(users)[0],  users[0], 'Error: should return deep copy of object');
-	t.deepEqual(mvpDemo.cloneDeep(users)[0],  users[0], 'Error: should return deep copy of object');
-	t.deepEqual(mvpDemo.cloneDeep(users)[0].user,  users[0].user, 'Error: should return deep copy of object');
-	t.deepEqual(mvpDemo.cloneDeep(users)[2].friends,  users[2].friends, 'Error: should return deep copy of object');
-	t.deepEqual(mvpDemo.cloneDeep(users)[2].friends,  users[2].friends , 'friends equal');
+test('should filter all odd values in obj', function (t) {
+	t.deepEqual(stressTest.filter({a:1, b:2, c:3, d:4}, (value, key, collection) => value % 2 !== 0),  {a:1, c:3}, 'Error: should filter all odd values in obj');
 	t.end();
 });
 
-test('should clone my stuff', function (t) {
-	var arr = [1,2,4,5];
-let obj = {"a": "b", "hello": "hi"};
-	t.deepEqual(mvpDemo.clone(arr),  [1,2,4,5], 'Error: should clone my stuff');
-	t.deepEqual(mvpDemo.clone(obj),  {"l":2}, 'Error: should clone my stuff');
+test('should not mutate the input array', function (t) {
+	numbers = [1, 2, 3, 4];
+duplicatedThroughFilter = stressTest.filter(numbers, () => true);
+	t.notEqual(stressTest.filter(numbers, () => true),  duplicatedThroughFilter, 'Error: should not mutate the input array');
 	t.end();
 });
 
 test('memoize', function (t) {
 	let fib, fastFib, timeCheck, fastTimeCheck, add, fastAdd, wait
         fib = (n) => (n < 2) ? n : fib(n - 1) + fib(n - 2);
-        fastFib = mvpDemo.memoize(fib);
+        fastFib = stressTest.memoize(fib);
         timeCheck = (str) => str + Date.now();
-        fastTimeCheck = mvpDemo.memoize(timeCheck);
+        fastTimeCheck = stressTest.memoize(timeCheck);
         add = (a, b, c) => a + b + c;
-        fastAdd = mvpDemo.memoize(add);
-
+        fastAdd = stressTest.memoize(add);
     // Synchronous sleep: terrible for web development, awesome for testing memoize
         wait = (t) => {
           const start = Date.now();
           while ((Date.now() - start) < t) 'wait';
         };
-
             let firstTime = timeCheck('shazaam!');
                 wait(5);
             let secondTime = fastTimeCheck('shazaam!');
                 wait(5);
-
 	t.equal(fib(10),  55, 'Error: memoize');
 	t.equal(fastFib(10),  55, 'Error: memoize');
 	t.notEqual(fastFib(10),  fastFib(7), 'Error: memoize');
@@ -71,11 +56,20 @@ test('memoize', function (t) {
 	t.equal(fastAdd(10, 5, 4),  19 , 'should accept multiple args');
 	firstTime = timeCheck({ foo: 'bar' });
     wait(5);
-     secondTime = fastTimeCheck({ foo: 'bar' });
+    secondTime = fastTimeCheck({ foo: 'bar' });
     wait(5);
-
 	t.notEqual(firstTime,  secondTime, 'Error: memoize');
 	t.deepEqual(fastTimeCheck({foo:'bar'}),  secondTime, 'Error: memoize');
 	t.notEqual(fastTimeCheck({foo:'bar'}),  fastTimeCheck({different: 'result'}), 'Error: memoize');
 	t.end();
+});
+
+test('delay - should only execute after wait time', function (t) {
+	t.plan(2);
+	let count = 0;
+stressTest.delay(() => count++, 50);
+setTimeout(() => {	t.equal(count,  0, 'Error: delay - should only execute after wait time');
+	}, 49);
+setTimeout(() => {	t.equal(count,  1 , 'message');
+	}, 51);
 });

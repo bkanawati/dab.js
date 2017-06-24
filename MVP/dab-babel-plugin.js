@@ -29,6 +29,12 @@ module.exports = function({types: t}) {
               //   tapeCount++;
               // }
             }
+
+            if (comments[i].value.includes("%g")) {
+              let globalStart = comments[i].value.indexOf("%g");
+              console.log("golball", comments[i].value)
+              comments[i].value = " dab" + comments[i].value.slice(globalStart+2).replace(/^[ ]+|[ ]+$/g, '');
+            }
 // ----------------------------------------------------------------------------
             // SECTION INCLUDES NAME/DESCRIPTION - ASSERTION AND VARIABLES
             // Split on squigglys/tildas
