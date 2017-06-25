@@ -1,4 +1,4 @@
-const test = require('tape'); 
+const test = require('tape')
 const stressTest = require('C:/Users/Batul/Desktop/dab.js/MVP/src/stressTest.js');
 
 var numbers= [1,3,4];
@@ -68,10 +68,18 @@ test('delay - should only execute after wait time', function (t) {
 	t.plan(2);
 	let count = 0;
 	stressTest.delay(() => count++, 50);
+	t.skip("skipped");
 	setTimeout(() => {
+	
 	t.equal(count,  0, 'Error: delay - should only execute after wait time');
 	}, 49);
 	setTimeout(() => {
+	t.skip();
 	t.equal(count,  1 , 'message');
 	}, 51);
+});
+
+test('should filter all odd values in obj', function (t) {
+	t.deepEqual(stressTest.filter({a:1, b:2, c:3, d:4}, (value, key, collection) => value % 2 !== 0),  {a:1, c:3}, 'Error: should filter all odd values in obj');
+	t.end();
 });

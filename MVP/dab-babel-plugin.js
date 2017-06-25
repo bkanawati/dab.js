@@ -21,7 +21,7 @@ module.exports = function({types: t}) {
             if (comments[i].value.includes('%Tape')) {
               // if (tapeCount === 0) {
               //   // console.log("first", comments[i].value );
-                comments[i].value = reqTape;
+                comments[i].value = reqFileName;
               //   tapeCount++;
               // } else {
               //   // console.log("2nd", comments[i].value);
@@ -160,7 +160,7 @@ module.exports = function({types: t}) {
                   }
 
                   // if currcomments[index] is a variable (optional)
-                  if (currcomments[index][0] !== 'a' && currcomments[index][1] !== ':' && currcomments[index] !== undefined && /\S/.test(currcomments[index])) {
+                  if (currcomments[index].indexOf("xa:") === -1 && currcomments[index][0] !== 'a' && currcomments[index][1] !== ':' && currcomments[index] !== undefined && /\S/.test(currcomments[index])) {
                     let variableSplit = currcomments[index].replace(/\r\n/, "\n").split(/\n/);
                     console.log(variableSplit);
                     for(let v = 0; v < variableSplit.length; v++){
@@ -168,17 +168,24 @@ module.exports = function({types: t}) {
                         variables = "\t" + variableSplit[v].replace(/^[ ]+|[ ]+$/g, '') + "\n";
                         finalCommentsTranspiled += variables;
                       }
-                      console.log("variable final comment", finalCommentsTranspiled)
+                      // console.log("variable final comment", finalCommentsTranspiled)
                     }
                   }
+
+                  // if currcomments[index] is skipped
+                  //  if (currcomments[index].indexOf("xa:") !== -1 && currcomments[index][0] === 'x' && currcomments[index][1] === 'a' && currcomments[index][2] === ':') {
+                  //   assertion = assertions(currcomments[index].slice(3).replace(/^[ ]+|[ ]+$/g, '')); 
+                  //   finalCommentsTranspiled += "\t" + "t.skip('SKIPPED:" + description + "');" + "\n" + assertion;
+                  // }
 
                   //if curcomments[index] is ending in plan 
                   if (currcomments[index].indexOf("p:") !== -1 && currcomments[index][0] === 'p' && currcomments[index][1] === ':') {
                     // let plan  = "\t" + currcomments[index].slice(2).replace(/^[ ]+|[ ]+$/g, '');
                     let planInput = currcomments[index].slice(2).replace(/\s/g, ''); 
                     endTest = '';
-                    finalCommentsTranspiled += `\tt.plan(${planInput});\n`
+                    finalCommentsTranspiled += `\tt.plan(${planInput});\n`;
                   }
+                  
               }
               comments[i].value = test + "('" + description + "', function (t) {" + "\n" + finalCommentsTranspiled +  endTest + "});" ;
             }

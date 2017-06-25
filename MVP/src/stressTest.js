@@ -123,5 +123,9 @@ stressTest.delay(() => count++, 50);
 setTimeout(() => { ~a: count equal 0 ~ }, 49);
 setTimeout(() => { ~a: count equal 1 | message ~ }, 51);
 */
+/*
+~ should filter all odd values in obj
+~a: stressTest.filter({a:1, b:2, c:3, d:4}, (value, key, collection) => value % 2 !== 0) deepEqual {a:1, c:3}
+*/
 
 module.exports = stressTest
