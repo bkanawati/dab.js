@@ -93,6 +93,7 @@ stressTest.memoize = function(func) {
   ~a: fastTimeCheck({foo:'bar'}) deepEqual secondTime
   ~a: fastTimeCheck({foo:'bar'}) notEqual fastTimeCheck({different: 'result'})
 */
+//~hello ~a: SstressTest.filter(numbers, () => true) notEqual duplicatedThroughFilter
 stressTest.delay = function(func, wait) {
   //   setTimeout(function(arguments) {
   //     let args = arguments;
@@ -127,5 +128,6 @@ setTimeout(() => { ~a: count equal 1 | message ~ }, 51);
 ~ should filter all odd values in obj
 ~a: stressTest.filter({a:1, b:2, c:3, d:4}, (value, key, collection) => value % 2 !== 0) deepEqual {a:1, c:3}
 */
+
 
 module.exports = stressTest

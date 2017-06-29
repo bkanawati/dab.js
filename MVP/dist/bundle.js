@@ -1,4 +1,3 @@
-/*! For license information please see ../tests/tape-test-sample.js */
 (function(modules) {
     var installedModules = {};
     function __webpack_require__(moduleId) {
@@ -42,67 +41,8 @@
     };
     __webpack_require__.p = "";
     return __webpack_require__(__webpack_require__.s = 1);
-})([ function(module, exports, __webpack_require__) {
-    "use strict";
-    function _toConsumableArray(arr) {
-        if (Array.isArray(arr)) {
-            for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) {
-                arr2[i] = arr[i];
-            }
-            return arr2;
-        } else {
-            return Array.from(arr);
-        }
-    }
-    var stressTest = {};
-    stressTest.reverseObject = function(object) {
-        var result = {};
-        for (key in object) {
-            result[object[key]] = key;
-        }
-        return result;
-    };
-    stressTest.filter = function(collection, callback) {
-        if (Array.isArray(collection)) {
-            var filtered = [];
-            collection.forEach(function(v, i, a) {
-                if (callback(collection[i], i, collection)) {
-                    filtered.push(collection[i]);
-                }
-            });
-            return filtered;
-        } else {
-            var _filtered = {};
-            for (key in collection) {
-                if (callback(collection[key], key, collection)) {
-                    _filtered[key] = collection[key];
-                }
-            }
-            return _filtered;
-        }
-    };
-    stressTest.memoize = function(func) {
-        var cache = {};
-        return function() {
-            for (var _len = arguments.length, params = Array(_len), _key = 0; _key < _len; _key++) {
-                params[_key] = arguments[_key];
-            }
-            var args = params.map(function(e) {
-                return JSON.stringify(e);
-            });
-            if (cache[args]) return cache[args]; else {
-                cache[args] = func.apply(undefined, params);
-                return cache[args];
-            }
-        };
-    };
-    stressTest.delay = function(func, wait) {
-        var args = arguments;
-        var argsArray = [].concat(_toConsumableArray(args));
-        var slicedArgs = argsArray.slice(2);
-        setTimeout.apply(undefined, [ func, wait ].concat(_toConsumableArray(slicedArgs)));
-    };
-    module.exports = stressTest;
+})([ function(module, exports) {
+    throw new Error("Module parse failed: C:\\Users\\Batul\\Desktop\\dab.js\\MVP\\node_modules\\babel-loader\\lib\\index.js!C:\\Users\\Batul\\Desktop\\dab.js\\MVP\\src\\stressTest.js Unexpected token (108:0)\nYou may need an appropriate loader to handle this file type.\n| \tt.notEqual(SstressTest.filter(numbers, () => true),  duplicatedThroughFilter, 'Error: hello');\n| \tt.end();\n| });\n| stressTest.delay = function (func, wait) {\n|   //   setTimeout(function(arguments) {");
 }, function(module, exports, __webpack_require__) {
     "use strict";
     var stressTest = __webpack_require__(0);

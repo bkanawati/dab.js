@@ -68,13 +68,10 @@ test('delay - should only execute after wait time', function (t) {
 	t.plan(2);
 	let count = 0;
 	stressTest.delay(() => count++, 50);
-	t.skip("skipped");
 	setTimeout(() => {
-	
 	t.equal(count,  0, 'Error: delay - should only execute after wait time');
 	}, 49);
 	setTimeout(() => {
-	t.skip();
 	t.equal(count,  1 , 'message');
 	}, 51);
 });
