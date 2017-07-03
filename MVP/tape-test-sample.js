@@ -1,7 +1,5 @@
 const test = require('tape')
 const newTest = require('C:/Users/Batul/Desktop/CS-big-project/dab.js/MVP/src/newTest.js');
-const supertest = require('supertest');
-
 
 test('my ADD func', function (t) {
 	t.notEqual(add(2,4),  1, 'Error: my ADD func');
@@ -9,10 +7,6 @@ test('my ADD func', function (t) {
 });
 
 const stressTest = require('C:/Users/Batul/Desktop/CS-big-project/dab.js/MVP/src/stressTest.js');
-
-
-var numbers= [1,3,4];
-
 
 test('should reverse multiple properties', function (t) {
 	t.deepEqual(stressTest.reverseObject({a:1,b:2}),  {'1':'a','2':'b'}, 'Error: should reverse multiple properties');

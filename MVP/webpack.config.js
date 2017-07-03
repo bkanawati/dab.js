@@ -19,10 +19,10 @@ module.exports = {
 			new webpack.optimize.UglifyJsPlugin({
                 compress: false,
                 mangle: false,
-                comments: false,
+                comments: true,
                 beautify: true,
                 extractComments: {
-                  condition: /dab/,
+                  condition: /ß∂dNß0j1/,
                   filename: '../tests/tape-test-sample.js'
                 },
             }),    
